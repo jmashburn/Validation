@@ -3,5 +3,13 @@
 
 include "src/Toro.php";
 
+class HelloHandler {
+    function get() {
+        echo "Hello, world";
+    }
+}
 
-echo "Here";
+Toro::serve(array(
+    "/" => "HelloHandler",
+));
+
