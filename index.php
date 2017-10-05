@@ -2,9 +2,6 @@
 
 require 'vendor/autoload.php';
 
-include "src/Toro.php";
-
-
 use Aws\Ec2\Ec2Client;
 
 
