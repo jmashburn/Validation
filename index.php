@@ -1,5 +1,6 @@
 <?php
 
+require 'vendor/autoload.php';
 
 include "src/Toro.php";
 
