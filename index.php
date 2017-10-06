@@ -2,21 +2,44 @@
 
 require 'vendor/autoload.php';
 
-use Aws\Ec2\Ec2Client;
+use Aws\SimpleDb\SimpleDbClient;
 
 
 class HelloHandler {
-    function get() {
-  		$ec2Client = new Ec2Client([
-    		'region' => 'us-west-2',
-    		'version' => '2016-11-15',
-		]);
-     	$result = $ec2Client->describeInstances();
-		var_dump($result); 
+
+    var $client = null;
+
+    function get($region) {
+        try {
+            $this->createClient($region);
+            if ($this->createDomain($region)) {
+                $domains = $this->client->getIterator('ListDomains')->toArray();
+                var_export($domains);
+            }
+        } catch (Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+
+    function createClient($region) {
+        $this->client = SimpleDbClient::factory(array(
+            'region' => $region
+            )
+        );
+    }
+
+
+    function createDomain($domain) {
+        if (!$this->client) $this->createClient($domain);
+        if ($client->createDomain(array('DomainName' => $region))) {
+            return true;
+        }
+        return false;
     }
 }
 
 Toro::serve(array(
-    "/" => "HelloHandler",
+    "/([a-zA-Z0-9-_]+)" => "HelloHandler",
 ));
 
