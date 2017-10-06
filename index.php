@@ -29,7 +29,6 @@ class ValidationHandler {
     }
 
     function createTable($region) {
-        if (!$this->client) {
 
     }
 }
