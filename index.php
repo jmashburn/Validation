@@ -25,9 +25,15 @@ class ValidationHandler {
 
     function createClient($region) {
         $this->client = DynamoDbClient::factory(array(
-            'region' => $region
+            'region' => $region,
+            'version' => '2012-08-10'
             )
         );
+    }
+
+    function createTable($region) {
+        if (!$this->client) {
+
     }
 }
 
