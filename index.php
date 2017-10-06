@@ -10,7 +10,6 @@ class HelloHandler {
   		$ec2Client = new Ec2Client([
     		'region' => 'us-west-2',
     		'version' => '2016-11-15',
-    		'profile' => 'default'
 		]);
      	$result = $ec2Client->describeInstances();
 		var_dump($result); 
