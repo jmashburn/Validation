@@ -13,10 +13,7 @@ class ValidationHandler {
     function get($region) {
         try {
             $this->createClient($region);
-            $result = $client->describeTable(array(
-                'TableName' => $this->table
-            ));
-            var_export($result);
+            print_r($this->client);
         } catch (Exception $e) {
             echo $e->getMessage();
         }
@@ -32,6 +29,7 @@ class ValidationHandler {
     }
 
     function createTable($region) {
+        if (!$this->client) {
 
     }
 }
