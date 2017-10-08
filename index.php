@@ -66,6 +66,7 @@ class DisplayHandler extends Handler {
         $iterator = $client->getIterator('Scan', array(
             'TableName' => $this->table
         ));
+        echo "</pre>";
         foreach ($iterator as $item) {
 			print_r($item);
 		}
