@@ -5,7 +5,7 @@ require 'vendor/autoload.php';
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
 use Aws\DynamoDb\Marshaler;
-
+use Aws\DynamoDb\ItemIterator;
 
 class AwsClient {
 
@@ -44,6 +44,7 @@ class ValidationHandler extends Handler {
                 'region'      => $region,
                 'test'        => $test,
                 'result'      => $result,
+                'timestamp'   => (string) time(),
         );
 
         try {
@@ -62,7 +63,12 @@ class ValidationHandler extends Handler {
 class DisplayHandler extends Handler {
 
     function get($region) {
-        echo "DisplayHandler: $region";
+        $client = $this->client->createClient($region);
+        $iterator = new ItemIterator($client->getIterator('Scan', array(
+    		'TableName' => $this->table
+		)));
+
+		print_r($iterator);
     }
 }
 
