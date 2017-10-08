@@ -5,7 +5,6 @@ require 'vendor/autoload.php';
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
 use Aws\DynamoDb\Marshaler;
-use Aws\DynamoDb\ItemIterator;
 
 class AwsClient {
 
@@ -64,9 +63,9 @@ class DisplayHandler extends Handler {
 
     function get($region) {
         $client = $this->client->createClient($region);
-        $iterator = new ItemIterator($client->getIterator('Scan', array(
-    		'TableName' => $this->table
-		)));
+        $iterator = $client->getIterator('Scan', array(
+            'TableName' => $this->table
+        ));
 
 		print_r($iterator);
     }
