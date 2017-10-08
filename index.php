@@ -61,7 +61,6 @@ class ValidationHandler extends Handler {
 }
 
 class DisplayHandler extends Handler {
-
 	function get($region) {
         $client = $this->client->createClient($region);
         $instances = new ItemIterator($client->getScanIterator(array(
@@ -73,12 +72,29 @@ class DisplayHandler extends Handler {
                 $ec2['instances'][$item['instance_id']]['ip_address'] = $item['ip_address'];
                 $ec2['instances'][$item['instance_id']]['region'] = $item['region'];
                 $ec2['instances'][$item['instance_id']]['timestamp'] = (in_array('timestamp',array_keys($item))?$item['timestamp']:time());
-                $ec2['instances'][$item['instance_id']][$item['test']] = array(
-                        'result' => $item['result']
-                );
+                $ec2['instances'][$item['instance_id']]['validation'][$item['test']] = $item['result'];
         }
-        $json = json_encode($ec2);
-        echo $json;
+        echo "<html>";
+        echo "<style>";
+        echo ".SUCCESS { background: green }";
+        echo ".ERROR { background: red }";
+        echo "</style>";
+        echo "<body>";
+        echo "<table width=\"100%\" border=\"1\">";
+        echo "<tr><th>Instance ID</th><th>IP Address</th><th>Region</th><th colspan=\"5\">Test</th></tr>";
+        foreach ($ec2['instances'] as $instance_id => $instance) {
+          echo "<tr><td>".$instance_id."</td><td>".$instance['ip_address']."</td><td>".$instance['region']."</td><td>";
+          echo "<table width=\"100%\"><tr>";
+          foreach ($instance['validation'] as $test => $validation) {
+            echo "<td class=\"$validation\">". $test ."</td>";
+          }
+          echo "</tr></table></td></tr>";
+        }
+        echo "</table>";
+        echo "</body>";
+        echo "</html>";
+        #$json = json_encode($ec2);
+        #echo $json;
     }
 }
 
