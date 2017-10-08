@@ -4,36 +4,54 @@ require 'vendor/autoload.php';
 
 use Aws\DynamoDb\DynamoDbClient;
 
+class AwsClient {
+    
+    function createClient($region) {
+        $this->client = DynamoDbClient::factory(array(
+            'region' => $region,
+            'version' => '2012-08-10',
+            'profile' => $region,
+            )
+        );
+    }
+}
 
-class ValidationHandler {
-
-    var $table = 'validation';
+class Handler {
+ 
     var $client = null;
+    var $table = 'validation';
 
-    function get($region) {
+    public function __construct() {
+        $this->client = new AwsClient();
+    }
+
+}
+
+class ValidationHandler extends Handler {
+
+    function post($region, $instance_id) {
+        
+    }
+
+    function get($region, $instance_id) {
         try {
-            $this->createClient($region);
+            $this->client->createClient($region);
             print_r($this->client);
         } catch (Exception $e) {
             echo $e->getMessage();
         }
     }
+}
 
-
-    function createClient($region) {
-        $this->client = DynamoDbClient::factory(array(
-            'region' => $region,
-            'version' => '2012-08-10'
-            )
-        );
-    }
-
-    function createTable($region) {
-
+class DisplayHandler extends Handler {
+    
+    function get($region) {
+        echo "DisplayHandler: $region";
     }
 }
 
 Toro::serve(array(
-    "/([a-zA-Z0-9-_]+)" => "ValidationHandler",
+    "/([a-zA-Z0-9-_]+)" => "DisplayHandler",
+    "/([a-zA-Z0-9-_]+)/([a-zA-Z0-9-_]+)" => "ValidationHandler",
 ));
 
