@@ -5,6 +5,7 @@ require 'vendor/autoload.php';
 use Aws\DynamoDb\DynamoDbClient;
 use Aws\DynamoDb\Exception\DynamoDbException;
 use Aws\DynamoDb\Marshaler;
+use Aws\DynamoDb\Iterator\ItemIterator;
 
 class AwsClient {
 
@@ -61,15 +62,23 @@ class ValidationHandler extends Handler {
 
 class DisplayHandler extends Handler {
 
-    function get($region) {
+	function get($region) {
         $client = $this->client->createClient($region);
-        $iterator = $client->getIterator('Scan', array(
+        $instances = new ItemIterator($client->getScanIterator(array(
             'TableName' => $this->table
-        ));
-        echo "</pre>";
-        foreach ($iterator as $item) {
-			print_r($item);
-		}
+        )));
+        $ec2 = array();
+        foreach ($instances as $item) {
+                $item = $item->toArray();
+                $ec2['instances'][$item['instance_id']]['ip_address'] = $item['ip_address'];
+                $ec2['instances'][$item['instance_id']]['region'] = $item['region'];
+                $ec2['instances'][$item['instance_id']]['timestamp'] = (in_array('timestamp',array_keys($item))?$item['timestamp']:time());
+                $ec2['instances'][$item['instance_id']][$item['test']] = array(
+                        'result' => $item['result']
+                );
+        }
+        $json = json_encode($ec2);
+        echo $json;
     }
 }
 
