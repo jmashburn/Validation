@@ -34,6 +34,7 @@ class ValidationHandler extends Handler {
 
     function get($region, $instance_id) {
         $ip_address = (($_GET['ip'])?$_GET['ip']:'0.0.0.0');
+        $hostname   = (($_GET['hostname'])?$_GET['hostname']:'UNKNOWN');
         $test       = (($_GET['test'])?$_GET['test']:'null');
         $result     = (($_GET['result'])?$_GET['result']:'UNKNOWN');
         $marshaler = new Marshaler();
@@ -41,6 +42,7 @@ class ValidationHandler extends Handler {
         $inputs = array(
                 'instance_id' => $instance_id,
                 'ip_address'  => $ip_address,
+                'hostname'    => $hostname,
                 'region'      => $region,
                 'test'        => $test,
                 'result'      => $result,
