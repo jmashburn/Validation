@@ -72,6 +72,7 @@ class DisplayHandler extends Handler {
         foreach ($instances as $item) {
                 $item = $item->toArray();
                 $ec2['instances'][$item['instance_id']]['ip_address'] = $item['ip_address'];
+                $ec2['instances'][$item['instance_id']]['hostname'] = $item['hostname'];
                 $ec2['instances'][$item['instance_id']]['region'] = $item['region'];
                 $ec2['instances'][$item['instance_id']]['timestamp'] = (in_array('timestamp',array_keys($item))?$item['timestamp']:time());
                 $ec2['instances'][$item['instance_id']]['validation'][$item['test']] = $item['result'];
@@ -83,9 +84,9 @@ class DisplayHandler extends Handler {
         echo "</style>";
         echo "<body>";
         echo "<table width=\"100%\" border=\"1\">";
-        echo "<tr><th>Instance ID</th><th>IP Address</th><th>Region</th><th colspan=\"5\">Test</th></tr>";
+        echo "<tr><th>Instance ID</th><th>IP Address</th><th>Hostname</th><th>Region</th><th colspan=\"5\">Test</th></tr>";
         foreach ($ec2['instances'] as $instance_id => $instance) {
-          echo "<tr><td>".$instance_id."</td><td>".$instance['ip_address']."</td><td>".$instance['region']."</td><td>";
+          echo "<tr><td>".$instance_id."</td><td>".$instance['ip_address']."</td><td>".$instance['hostname']."</td><td>".$instance['region']."</td><td>";
           echo "<table width=\"100%\"><tr>";
           foreach ($instance['validation'] as $test => $validation) {
             echo "<td class=\"$validation\">". $test ."</td>";
