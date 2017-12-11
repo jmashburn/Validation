@@ -33,10 +33,10 @@ class Handler {
 class ValidationHandler extends Handler {
 
     function get($region, $instance_id) {
-        $ip_address = (($_GET['ip'])?$_GET['ip']:'0.0.0.0');
-        $hostname   = (($_GET['hostname'])?$_GET['hostname']:'UNKNOWN');
-        $test       = (($_GET['test'])?$_GET['test']:'null');
-        $result     = (($_GET['result'])?$_GET['result']:'UNKNOWN');
+        $ip_address = ((array_key_exists('ip', $_GET))?$_GET['ip']:'0.0.0.0');
+        $hostname   = ((array_key_exists('hostname', $_GET))?$_GET['hostname']:'UNKNOWN');
+        $test       = ((array_key_exists('test', $_GET))?$_GET['test']:'null');
+        $result     = ((array_key_exists('result', $_GET))?$_GET['result']:'UNKNOWN');
         $marshaler = new Marshaler();
 
         $inputs = array(
@@ -55,6 +55,8 @@ class ValidationHandler extends Handler {
                         'TableName' => $this->table,
                         'Item' => $marshaler->marshalItem($inputs)
                 ));
+		print_r(json_encode($inputs));
+		return true;
         } catch (DynamoDbException $e) {
                 echo $e->getMessage();
         }
@@ -70,6 +72,7 @@ class DisplayHandler extends Handler {
         )));
         $ec2 = array();
         foreach ($instances as $item) {
+		if (!isset($item['hostname'])) continue;
                 $item = $item->toArray();
                 $ec2['instances'][$item['instance_id']]['ip_address'] = $item['ip_address'];
                 $ec2['instances'][$item['instance_id']]['hostname'] = $item['hostname'];
@@ -81,9 +84,11 @@ class DisplayHandler extends Handler {
         echo "<style>";
         echo ".SUCCESS { background: green }";
         echo ".ERROR { background: red }";
+	echo ".table { border-width: thin;border-spacing: 2px;border-style: none;border-color: black;}";
+	echo "table th { border: 1 }";
         echo "</style>";
         echo "<body>";
-        echo "<table width=\"100%\" border=\"1\">";
+        echo "<table class=\"table\">";
         echo "<tr><th>Instance ID</th><th>IP Address</th><th>Hostname</th><th>Region</th><th colspan=\"5\">Test</th></tr>";
         foreach ($ec2['instances'] as $instance_id => $instance) {
           echo "<tr><td>".$instance_id."</td><td>".$instance['ip_address']."</td><td>".$instance['hostname']."</td><td>".$instance['region']."</td><td>";
