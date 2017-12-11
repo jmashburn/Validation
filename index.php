@@ -80,29 +80,36 @@ class DisplayHandler extends Handler {
                 $ec2['instances'][$item['instance_id']]['timestamp'] = (in_array('timestamp',array_keys($item))?$item['timestamp']:time());
                 $ec2['instances'][$item['instance_id']]['validation'][$item['test']] = $item['result'];
         }
-        echo "<html>";
-        echo "<style>";
-        echo ".SUCCESS { background: green }";
-        echo ".ERROR { background: red }";
-	echo ".table { border-width: thin;border-spacing: 2px;border-style: none;border-color: black;}";
-	echo "table th { border: 1 }";
-        echo "</style>";
-        echo "<body>";
-        echo "<table class=\"table\">";
-        echo "<tr><th>Instance ID</th><th>IP Address</th><th>Hostname</th><th>Region</th><th colspan=\"5\">Test</th></tr>";
+?>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<style>
+		.ERROR { background-color: #d9534f; };
+		.SUCCESS { background-color: #5cb85c; };
+	</style>
+</head>
+<body>
+<div class="container">
+	<table class="table table-striped">
+        <tr><th>Instance ID</th><th>IP Address</th><th>Hostname</th><th>Region</th><th colspan="5">Test</th></tr>
+<?php
         foreach ($ec2['instances'] as $instance_id => $instance) {
           echo "<tr><td>".$instance_id."</td><td>".$instance['ip_address']."</td><td>".$instance['hostname']."</td><td>".$instance['region']."</td><td>";
-          echo "<table width=\"100%\"><tr>";
           foreach ($instance['validation'] as $test => $validation) {
             echo "<td class=\"$validation\">". $test ."</td>";
           }
-          echo "</tr></table></td></tr>";
+          echo "</td></tr>";
         }
-        echo "</table>";
-        echo "</body>";
-        echo "</html>";
-        #$json = json_encode($ec2);
-        #echo $json;
+?>
+ </table>
+</div>
+ </body>
+ </html>
+<?php 
     }
 }
 
